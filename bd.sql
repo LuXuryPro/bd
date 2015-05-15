@@ -296,47 +296,90 @@ BEGIN
 END GENERATOR_DATY;
 /
 
-create or replace PROCEDURE GENERATOR_1(ILOSC in NUMBER) IS
+create or replace PROCEDURE GENERATOR_UZYTKOWNIK(ILOSC in NUMBER) IS
 BEGIN
 	FOR i IN 1..ILOSC LOOP
-		INSERT INTO UZYTKOWNIK VALUES (NULL, dbms_random.string('x', DBMS_RANDOM.VALUE(3,10)));
-    INSERT INTO GATUNEK VALUES (NULL, dbms_random.string('x', DBMS_RANDOM.VALUE(3,10)));
-    INSERT INTO PLATFORMA VALUES (NULL, dbms_random.string('x', DBMS_RANDOM.VALUE(3,10)));
-    INSERT INTO WYDAWCA VALUES (NULL, dbms_random.string('x', DBMS_RANDOM.VALUE(3,10)));
+		INSERT INTO UZYTKOWNIK VALUES (NULL, dbms_random.string('A', DBMS_RANDOM.VALUE(3,10)));
 	END LOOP;
-END GENERATOR_1;
+END GENERATOR_UZYTKOWNIK;
 /
 
-EXECUTE  GENERATOR_1(100);
+EXECUTE GENERATOR_UZYTKOWNIK(100);
 
-INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES ('Counter Strike Global Offensive',1,'');
-INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES ('Empire Earth 3',2,'');
-INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES ('Flight Gear',5,'');
-INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES ('FIFA 15',6,'');
-INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES ('The Vanishing of Ethan Carter',4,'');
-INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES ('Super Mario Bros',3,'');
-INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES ('Populus',7,'');
-INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES ('Counter Strike 1.6',1,'');
-INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES ('League of Legends',8,'');
-INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES ('Dying Light',1,'');
-INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES ('Half Life',1,'');
-INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES ('Portal',1,'');
-INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES ('Crysis',1,'');
-INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES ('Need for Speed: Most Wanted',9,'');
-INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES ('Grand Theft Auto V',10,'');
+create or replace PROCEDURE GENERATOR_GATUNEK(ILOSC in NUMBER) IS
+BEGIN
+	FOR i IN 1..ILOSC LOOP
+    INSERT INTO GATUNEK VALUES (NULL, dbms_random.string('A', DBMS_RANDOM.VALUE(3,10)));
+	END LOOP;
+END GENERATOR_GATUNEK;
+/
+EXECUTE GENERATOR_GATUNEK(20);
 
-INSERT INTO WYDANIE_GRY (gra_id,wydawca_id,platforma_id,data) VALUES (1,1,1,TO_DATE('21-08-2012'));
-INSERT INTO WYDANIE_GRY (gra_id,wydawca_id,platforma_id,data) VALUES (8,1,1,TO_DATE('01-11-2000'));
-INSERT INTO WYDANIE_GRY (gra_id,wydawca_id,platforma_id,data) VALUES (9,6,1,TO_DATE('07-10-2009'));
-INSERT INTO WYDANIE_GRY (gra_id,wydawca_id,platforma_id,data) VALUES (10,2,1,TO_DATE('07-10-2009'));
-INSERT INTO WYDANIE_GRY (gra_id,wydawca_id,platforma_id,data) VALUES (11,1,1,TO_DATE('19-11-1998'));
-INSERT INTO WYDANIE_GRY (gra_id,wydawca_id,platforma_id,data) VALUES (12,1,1,TO_DATE('10-10-2007'));
-INSERT INTO WYDANIE_GRY (gra_id,wydawca_id,platforma_id,data) VALUES (13,4,1,TO_DATE('16-10-2007'));
-INSERT INTO WYDANIE_GRY (gra_id,wydawca_id,platforma_id,data) VALUES (14,4,1,TO_DATE('06-12-2005'));
-INSERT INTO WYDANIE_GRY (gra_id,wydawca_id,platforma_id,data) VALUES (15,7,1,TO_DATE('14-04-2015'));
-INSERT INTO WYDANIE_GRY (gra_id,wydawca_id,platforma_id,data) VALUES (15,7,2,TO_DATE('18-11-2014'));
-INSERT INTO WYDANIE_GRY (gra_id,wydawca_id,platforma_id,data) VALUES (15,7,3,TO_DATE('17-09-2013'));
-INSERT INTO WYDANIE_GRY (gra_id,wydawca_id,platforma_id,data) VALUES (15,7,4,TO_DATE('17-09-2013'));
+create or replace PROCEDURE GENERATOR_PLATFORMA(ILOSC in NUMBER) IS
+BEGIN
+	FOR i IN 1..ILOSC LOOP
+    INSERT INTO PLATFORMA VALUES (NULL, dbms_random.string('A', DBMS_RANDOM.VALUE(3,10)));
+	END LOOP;
+END GENERATOR_PLATFORMA;
+/
+EXECUTE GENERATOR_PLATFORMA(10);
+create or replace PROCEDURE GENERATOR_WYDAWCA(ILOSC in NUMBER) IS
+BEGIN
+	FOR i IN 1..ILOSC LOOP
+    INSERT INTO WYDAWCA VALUES (NULL, dbms_random.string('A', DBMS_RANDOM.VALUE(3,10)));
+	END LOOP;
+END GENERATOR_WYDAWCA;
+/
+EXECUTE GENERATOR_WYDAWCA(30);
+
+create or replace PROCEDURE GENERATOR_STUDIO_DEWELOPERSKIE(ILOSC in NUMBER) IS
+BEGIN
+	FOR i IN 1..ILOSC LOOP
+    INSERT INTO STUDIO_DEWELOPERSKIE VALUES (NULL, dbms_random.string('A', DBMS_RANDOM.VALUE(3,10)));
+	END LOOP;
+END GENERATOR_STUDIO_DEWELOPERSKIE;
+/
+EXECUTE GENERATOR_STUDIO_DEWELOPERSKIE(70);
+
+
+create or replace PROCEDURE GENERATOR_GRA(ILOSC in NUMBER) IS
+TYPE TABSTR IS TABLE OF VARCHAR2(250);
+tags TABSTR;
+BEGIN
+  tags := TABSTR('nowosc','hit','legendarna produkcja','tylko na pc','remake','darmowa','promocja','debiut','popularna','niezalezna produkcja','beta','alpha','gamma','early access','steam');
+	FOR i IN 1..ILOSC LOOP
+		INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES
+    (
+    dbms_random.string('A', DBMS_RANDOM.VALUE(3,10)),
+    (select gatunek_id from (select gatunek_id from GATUNEK order by dbms_random.value) where rownum = 1),
+    tags(1+mod(i,15)) || ',' || tags(1+mod(i+1,15)) || ',' || tags(1+mod(i+2,15))
+    );
+	END LOOP;
+END GENERATOR_GRA;
+/
+
+EXECUTE GENERATOR_GRA(100);
+
+create or replace PROCEDURE GENERATOR_WYDANIE_GRY(ILOSC in NUMBER) IS
+BEGIN
+	FOR i IN 1..ILOSC LOOP
+  <<UP>>
+  BEGIN
+		INSERT INTO WYDANIE_GRY VALUES (
+    (select gra_id from (select gra_id from GRA order by dbms_random.value) where rownum = 1),
+    (select wydawca_id from (select wydawca_id from WYDAWCA order by dbms_random.value) where rownum = 1),
+    (select platforma_id from (select platforma_id from PLATFORMA order by dbms_random.value) where rownum = 1),
+    GENERATOR_DATY(1990,2015)
+    );
+    EXCEPTION
+      WHEN DUP_VAL_ON_INDEX THEN
+      goto UP;
+    END;
+	END LOOP;
+END GENERATOR_WYDANIE_GRY;
+/
+
+EXECUTE  GENERATOR_WYDANIE_GRY(100);
 
 select GRA.NAZWA,WYDAWCA.NAZWA as NAZWA_WYDAWCY,PLATFORMA.NAZWA as NAZWA_PLATFORMY,WYDANIE_GRY.DATA as DATA_WYDANIA
 from GRA join WYDANIE_GRY on GRA.gra_id = WYDANIE_GRY.gra_id
