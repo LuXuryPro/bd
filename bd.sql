@@ -351,7 +351,7 @@ tags TABSTR;
 BEGIN
   tags := TABSTR('nowosc','hit','legendarna produkcja','tylko na pc','remake','darmowa','promocja','debiut','popularna','niezalezna produkcja','beta','alpha','gamma','early access','steam');
 	FOR i IN 1..ILOSC LOOP
-		INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES
+	INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES
     (
     dbms_random.string('A', DBMS_RANDOM.VALUE(3,10)),
     (select gatunek_id from (select gatunek_id from GATUNEK order by dbms_random.value) where rownum = 1),
@@ -368,7 +368,7 @@ BEGIN
 	FOR i IN 1..ILOSC LOOP
   <<UP>>
   BEGIN
-		INSERT INTO WYDANIE_GRY VALUES (
+	INSERT INTO WYDANIE_GRY VALUES (
     (select gra_id from (select gra_id from GRA order by dbms_random.value) where rownum = 1),
     (select wydawca_id from (select wydawca_id from WYDAWCA order by dbms_random.value) where rownum = 1),
     (select platforma_id from (select platforma_id from PLATFORMA order by dbms_random.value) where rownum = 1),
@@ -388,7 +388,7 @@ EXECUTE  GENERATOR_WYDANIE_GRY(100);
 create or replace PROCEDURE GENERATOR_KOMENTARZ_DO_GRY(ILOSC in NUMBER) IS
 BEGIN
 	FOR i IN 1..ILOSC LOOP
-		INSERT INTO KOMENTARZ_DO_GRY VALUES (NULL,
+	INSERT INTO KOMENTARZ_DO_GRY VALUES (NULL,
     (select gra_id from (select gra_id from GRA order by dbms_random.value) where rownum = 1),
     (select UZYTKOWNIK_ID from (select UZYTKOWNIK_ID from UZYTKOWNIK order by dbms_random.value) where rownum = 1),
     GENERATOR_DATY(1990,2015),
@@ -406,7 +406,7 @@ tags TABSTR;
 BEGIN
   tags := TABSTR('nowosc','hit','nowy poradnik','kompletny poradnik','w trakcie tworzenia','darmowy','płatny');
 	FOR i IN 1..ILOSC LOOP
-		INSERT INTO PORADNIK_DO_GRY VALUES (NULL,
+	INSERT INTO PORADNIK_DO_GRY VALUES (NULL,
     (select UZYTKOWNIK_ID from (select UZYTKOWNIK_ID from UZYTKOWNIK order by dbms_random.value) where rownum = 1),
     (select gra_id from (select gra_id from GRA order by dbms_random.value) where rownum = 1),
     (select platforma_id from (select platforma_id from PLATFORMA order by dbms_random.value) where rownum = 1),
@@ -425,7 +425,7 @@ BEGIN
 	FOR i IN 1..ILOSC LOOP
   <<UP>>
   BEGIN
-		INSERT INTO TWORZENIE_GRY VALUES (
+	INSERT INTO TWORZENIE_GRY VALUES (
     (select gra_id from (select gra_id from GRA order by dbms_random.value) where rownum = 1),
     (select platforma_id from (select platforma_id from PLATFORMA order by dbms_random.value) where rownum = 1),
     (select STUDIO_DEWELOPERSKIE_id from (select STUDIO_DEWELOPERSKIE_id from STUDIO_DEWELOPERSKIE order by dbms_random.value) where rownum = 1),
@@ -448,7 +448,7 @@ tags TABSTR;
 BEGIN
   tags := TABSTR('dobra ocena','slaba ocena','autor poleca','nowa','w trakcie pisania');
 	FOR i IN 1..ILOSC LOOP
-		INSERT INTO RECENZJA VALUES (NULL,
+	INSERT INTO RECENZJA VALUES (NULL,
     (select gra_id from (select gra_id from GRA order by dbms_random.value) where rownum = 1),
     (select platforma_id from (select platforma_id from PLATFORMA order by dbms_random.value) where rownum = 1),
     (select uzytkownik_id from (select uzytkownik_id from UZYTKOWNIK order by dbms_random.value) where rownum = 1),
@@ -469,7 +469,7 @@ EXECUTE GENERATOR_RECENZJA(100);
 create or replace PROCEDURE GEN_KOMENTARZ_DO_RECENZJI(ILOSC in NUMBER) IS
 BEGIN
 	FOR i IN 1..ILOSC LOOP
-		INSERT INTO KOMENTARZ_DO_RECENZJI VALUES (NULL,
+	INSERT INTO KOMENTARZ_DO_RECENZJI VALUES (NULL,
     (select gra_id from (select gra_id from GRA order by dbms_random.value) where rownum = 1),
     (select recenzja_id from (select recenzja_id from RECENZJA order by dbms_random.value) where rownum = 1),
     (select UZYTKOWNIK_ID from (select UZYTKOWNIK_ID from UZYTKOWNIK order by dbms_random.value) where rownum = 1),
