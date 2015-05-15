@@ -1,4 +1,9 @@
 ALTER SESSION SET nls_date_format = 'DD-MM-YYYY';
+BEGIN
+DBMS_RANDOM.seed('random_seed');
+END;
+/
+set serveroutput on;
 
 ALTER TABLE TWORZENIE_GRY DROP CONSTRAINT TWORZENIE_GRY_fk1;
 ALTER TABLE TWORZENIE_GRY DROP CONSTRAINT TWORZENIE_GRY_fk2;
@@ -278,23 +283,31 @@ ALTER TABLE KOMENTARZ_DO_RECENZJI ADD CONSTRAINT KOMENTARZ_DO_RECENZJI_pk PRIMAR
 ALTER TABLE KOMENTARZ_DO_RECENZJI ADD CONSTRAINT  KOMENTARZ_DO_RECENZJI_fk1 FOREIGN KEY (gra_id) REFERENCES GRA(gra_id);
 ALTER TABLE KOMENTARZ_DO_RECENZJI ADD CONSTRAINT  KOMENTARZ_DO_RECENZJI_fk2 FOREIGN KEY (recenzja_id) REFERENCES RECENZJA(recenzja_id);
 
-INSERT INTO GATUNEK (nazwa) VALUES ('FPS');
-INSERT INTO GATUNEK (nazwa) VALUES ('RTS');
-INSERT INTO GATUNEK (nazwa) VALUES ('Platformowa');
-INSERT INTO GATUNEK (nazwa) VALUES ('Przygodowa');
-INSERT INTO GATUNEK (nazwa) VALUES ('Symulator');
-INSERT INTO GATUNEK (nazwa) VALUES ('Sportowa');
-INSERT INTO GATUNEK (nazwa) VALUES ('God Game');
-INSERT INTO GATUNEK (nazwa) VALUES ('Multiplayer Online Battle Arena');
-INSERT INTO GATUNEK (nazwa) VALUES ('Car Racing');
-INSERT INTO GATUNEK (nazwa) VALUES ('TPP');
+create or replace FUNCTION GENERATOR_DATY(POCZATEK_ROK in NUMBER, KONIEC_ROK IN NUMBER) 
+RETURN DATE IS
+	y NUMBER(4);
+  d NUMBER(4);
+  dates VARCHAR2(10);
+BEGIN
+	y := dbms_random.value(POCZATEK_ROK,KONIEC_ROK);
+  d := dbms_random.value(1,355);
+  dates := to_char(y) || to_char(d,'999');
+  return to_date(dates,'yyyyddd');
+END GENERATOR_DATY;
+/
 
-INSERT INTO PLATFORMA (nazwa) VALUES ('PC');
-INSERT INTO PLATFORMA (nazwa) VALUES ('PS4');
-INSERT INTO PLATFORMA (nazwa) VALUES ('XBox');
-INSERT INTO PLATFORMA (nazwa) VALUES ('PS3');
-INSERT INTO PLATFORMA (nazwa) VALUES ('Pegasus');
-INSERT INTO PLATFORMA (nazwa) VALUES ('Gameboy');
+create or replace PROCEDURE GENERATOR_1(ILOSC in NUMBER) IS
+BEGIN
+	FOR i IN 1..ILOSC LOOP
+		INSERT INTO UZYTKOWNIK VALUES (NULL, dbms_random.string('x', DBMS_RANDOM.VALUE(3,10)));
+    INSERT INTO GATUNEK VALUES (NULL, dbms_random.string('x', DBMS_RANDOM.VALUE(3,10)));
+    INSERT INTO PLATFORMA VALUES (NULL, dbms_random.string('x', DBMS_RANDOM.VALUE(3,10)));
+    INSERT INTO WYDAWCA VALUES (NULL, dbms_random.string('x', DBMS_RANDOM.VALUE(3,10)));
+	END LOOP;
+END GENERATOR_1;
+/
+
+EXECUTE  GENERATOR_1(100);
 
 INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES ('Counter Strike Global Offensive',1,'');
 INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES ('Empire Earth 3',2,'');
@@ -311,14 +324,6 @@ INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES ('Portal',1,'');
 INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES ('Crysis',1,'');
 INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES ('Need for Speed: Most Wanted',9,'');
 INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES ('Grand Theft Auto V',10,'');
-
-INSERT INTO WYDAWCA (wydawca_id,nazwa) VALUES (null,'Valve Corporation');
-INSERT INTO WYDAWCA (wydawca_id,nazwa) VALUES (null,'Techland');
-INSERT INTO WYDAWCA (wydawca_id,nazwa) VALUES (null,'Cenega');
-INSERT INTO WYDAWCA (wydawca_id,nazwa) VALUES (null,'Electronic Arts');
-INSERT INTO WYDAWCA (wydawca_id,nazwa) VALUES (null,'Activision');
-INSERT INTO WYDAWCA (wydawca_id,nazwa) VALUES (null,'Riot Games');
-INSERT INTO WYDAWCA (wydawca_id,nazwa) VALUES (null,'Rockstar Games');
 
 INSERT INTO WYDANIE_GRY (gra_id,wydawca_id,platforma_id,data) VALUES (1,1,1,TO_DATE('21-08-2012'));
 INSERT INTO WYDANIE_GRY (gra_id,wydawca_id,platforma_id,data) VALUES (8,1,1,TO_DATE('01-11-2000'));
