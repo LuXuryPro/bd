@@ -1,48 +1,73 @@
 ALTER SESSION SET nls_date_format = 'DD-MM-YYYY';
 
-
 ALTER TABLE TWORZENIE_GRY DROP CONSTRAINT TWORZENIE_GRY_fk1;
 ALTER TABLE TWORZENIE_GRY DROP CONSTRAINT TWORZENIE_GRY_fk2;
 ALTER TABLE TWORZENIE_GRY DROP CONSTRAINT TWORZENIE_GRY_fk3;
-
 ALTER TABLE KOMENTARZ_DO_RECENZJI DROP CONSTRAINT KOMENTARZ_DO_RECENZJI_fk1;
 ALTER TABLE KOMENTARZ_DO_RECENZJI DROP CONSTRAINT KOMENTARZ_DO_RECENZJI_fk2;
-
 ALTER TABLE RECENZJA DROP CONSTRAINT recenzja_fk1;
 ALTER TABLE RECENZJA DROP CONSTRAINT recenzja_fk2;
 ALTER TABLE RECENZJA DROP CONSTRAINT recenzja_fk3;
-
 ALTER TABLE PORADNIK_DO_GRY DROP CONSTRAINT PORADNIK_DO_GRY_fk1;
 ALTER TABLE PORADNIK_DO_GRY DROP CONSTRAINT PORADNIK_DO_GRY_fk2;
 ALTER TABLE PORADNIK_DO_GRY DROP CONSTRAINT PORADNIK_DO_GRY_fk3;
-
 ALTER TABLE KOMENTARZ_DO_GRY DROP CONSTRAINT KOMENTARZ_DO_GRY_fk1;
 ALTER TABLE KOMENTARZ_DO_GRY DROP CONSTRAINT KOMENTARZ_DO_GRY_fk2;
-
 ALTER TABLE WYDANIE_GRY DROP CONSTRAINT WYDANIE_GRY_fk1;
 ALTER TABLE WYDANIE_GRY DROP CONSTRAINT WYDANIE_GRY_fk2;
 ALTER TABLE WYDANIE_GRY DROP CONSTRAINT WYDANIE_GRY_fk3;
 
-drop table TWORZENIE_GRY;
-drop table KOMENTARZ_DO_RECENZJI;
-drop table RECENZJA;
-drop table PORADNIK_DO_GRY;
-drop table KOMENTARZ_DO_GRY;
-drop table WYDANIE_GRY;
-drop table GRA;
-drop table GATUNEK;
-drop table STUDIO_DEWELOPERSKIE;
-drop table PLATFORMA;
-drop table ZNAJOMOSC;
-drop table UZYTKOWNIK;
-drop table WYDAWCA;
+DROP TRIGGER KOMENTARZ_DO_RECENZJI_seq_trg;
+DROP TABLE KOMENTARZ_DO_RECENZJI;
+DROP SEQUENCE KOMENTARZ_DO_RECENZJI_seq;
 
+DROP TRIGGER RECENZJA_seq_trg;
+DROP TABLE RECENZJA;
+DROP SEQUENCE RECENZJA_seq;
+
+drop table TWORZENIE_GRY;
+
+DROP TRIGGER PORADNIK_DO_GRY_seq_trg;
+DROP TABLE PORADNIK_DO_GRY;
+DROP SEQUENCE PORADNIK_DO_GRY_seq;
+
+DROP TRIGGER KOMENTARZ_DO_GRY_seq_trg;
+DROP TABLE KOMENTARZ_DO_GRY;
+DROP SEQUENCE KOMENTARZ_DO_GRY_seq;
+
+drop table WYDANIE_GRY;
+
+DROP TRIGGER GRA_seq_trg;
+DROP TABLE GRA;
+DROP SEQUENCE GRA_seq;
+
+DROP TRIGGER PLATFORMA_seq_trg;
+DROP TABLE PLATFORMA;
+DROP SEQUENCE PLATFORMA_seq;
+
+DROP TRIGGER STUDIO_DEWELOPERSKIE_seq_trg;
+DROP TABLE STUDIO_DEWELOPERSKIE;
+DROP SEQUENCE STUDIO_DEWELOPERSKIE_seq;
+
+DROP TRIGGER GATUNEK_seq_trg;
+DROP TABLE GATUNEK;
+DROP SEQUENCE GATUNEK_seq;
+
+
+DROP TRIGGER WYDAWCA_seq_trg;
+DROP TABLE WYDAWCA;
 DROP SEQUENCE WYDAWCA_seq;
+
+
+DROP TABLE UZYTKOWNIK;
+DROP SEQUENCE UZYTKOWNIK_seq;
+DROP TRIGGER UZYTKOWNIK_seq_trg;
+--------------------------------------------------------------------------------
 
 create table WYDAWCA(
   wydawca_id NUMBER,
-  nazwa VARCHAR2(200),
-  CONSTRAINT WYDAWCA_pk PRIMARY KEY (wydawca_id)
+  nazwa VARCHAR2(200)
+  
 );
 
 CREATE SEQUENCE WYDAWCA_seq;
@@ -53,179 +78,239 @@ BEGIN
   :NEW.wydawca_id := WYDAWCA_seq.NEXTVAL;
 END;
 /
+--------------------------------------------------------------------------------
 
 create table UZYTKOWNIK (
   uzytkownik_id NUMBER,
-  nazwa VARCHAR2(200),
-  CONSTRAINT UZYTKOWNIK_pk PRIMARY KEY (uzytkownik_id)
+  nazwa VARCHAR2(200)
 );
-create table ZNAJOMOSC (
-  id_a NUMBER,
-  id_b NUMBER,
-  CONSTRAINT ZNAJOMOSC_pk PRIMARY KEY (id_a,id_b),
-  CONSTRAINT ZNAJOMOSC_fk1 FOREIGN KEY (id_a)
-  REFERENCES UZYTKOWNIK(uzytkownik_id),
-  CONSTRAINT ZNAJOMOSC_fk2 FOREIGN KEY (id_b)
-  REFERENCES UZYTKOWNIK(uzytkownik_id)
-);
+
+CREATE SEQUENCE UZYTKOWNIK_seq;
+CREATE OR REPLACE TRIGGER UZYTKOWNIK_seq_trg
+BEFORE INSERT ON UZYTKOWNIK
+FOR EACH ROW
+BEGIN
+  :NEW.uzytkownik_id := UZYTKOWNIK_seq.NEXTVAL;
+END;
+/
+--------------------------------------------------------------------------------
 create table GATUNEK (
-  id NUMBER,
-  nazwa VARCHAR2(200),
-  CONSTRAINT gatunek_pk PRIMARY KEY (id)
+  gatunek_id NUMBER,
+  nazwa VARCHAR2(200)
 );
+
+CREATE SEQUENCE GATUNEK_seq;
+CREATE OR REPLACE TRIGGER GATUNEK_seq_trg
+BEFORE INSERT ON GATUNEK
+FOR EACH ROW
+BEGIN
+  :NEW.gatunek_id := GATUNEK_seq.NEXTVAL;
+END;
+/
+--------------------------------------------------------------------------------
 
 create table STUDIO_DEWELOPERSKIE (
-  id NUMBER,
-  nazwa VARCHAR2(200),
-  CONSTRAINT STUDIO_DEWELOPERSKIE_pk PRIMARY KEY (id)
+  studio_deweloperskie_id NUMBER,
+  nazwa VARCHAR2(200)
 );
+
+CREATE SEQUENCE STUDIO_DEWELOPERSKIE_seq;
+CREATE OR REPLACE TRIGGER STUDIO_DEWELOPERSKIE_seq_trg
+BEFORE INSERT ON STUDIO_DEWELOPERSKIE
+FOR EACH ROW
+BEGIN
+  :NEW.studio_deweloperskie_id := STUDIO_DEWELOPERSKIE_seq.NEXTVAL;
+END;
+/
+--------------------------------------------------------------------------------
 
 create table PLATFORMA (
-  id NUMBER,
-  nazwa VARCHAR2(200),
-  CONSTRAINT PLATFORMA_pk PRIMARY KEY (id)
+  platforma_id NUMBER,
+  nazwa VARCHAR2(200)
 );
 
+CREATE SEQUENCE PLATFORMA_seq;
+CREATE OR REPLACE TRIGGER PLATFORMA_seq_trg
+BEFORE INSERT ON PLATFORMA
+FOR EACH ROW
+BEGIN
+  :NEW.platforma_id := PLATFORMA_seq.NEXTVAL;
+END;
+/
+--------------------------------------------------------------------------------
 create table GRA (
-  id NUMBER,
+  gra_id NUMBER,
   nazwa VARCHAR2(200),
-  id_gatunek NUMBER,
-  tagi VARCHAR2(200),
-  CONSTRAINT gra_pk PRIMARY KEY (id),
-  CONSTRAINT gra_fk FOREIGN KEY (id_gatunek)
-  REFERENCES GATUNEK(id)
+  gatunek_id NUMBER,
+  tagi VARCHAR2(200)
 );
+
+CREATE SEQUENCE GRA_seq;
+CREATE OR REPLACE TRIGGER GRA_seq_trg
+BEFORE INSERT ON GRA
+FOR EACH ROW
+BEGIN
+  :NEW.gra_id := GRA_seq.NEXTVAL;
+END;
+/
+--------------------------------------------------------------------------------
 
 create table WYDANIE_GRY (
-  id_gra NUMBER,
-  id_wydawca NUMBER,
-  id_platforma NUMBER,
-  data DATE,
-  CONSTRAINT WYDANIE_GRY_pk PRIMARY KEY (id_gra, id_wydawca, id_platforma),
-  CONSTRAINT  WYDANIE_GRY_fk1 FOREIGN KEY (id_gra)
-  REFERENCES GRA(id),
-  CONSTRAINT  WYDANIE_GRY_fk2 FOREIGN KEY (id_wydawca)
-  REFERENCES WYDAWCA(wydawca_id),
-  CONSTRAINT  WYDANIE_GRY_fk3 FOREIGN KEY (id_platforma)
-  REFERENCES PLATFORMA(id)
+  gra_id NUMBER,
+  wydawca_id NUMBER,
+  platforma_id NUMBER,
+  data DATE
 );
+
+--------------------------------------------------------------------------------
 
 create table KOMENTARZ_DO_GRY (
-  id NUMBER,
-  id_gra NUMBER,
-  id_uzytkownik NUMBER,
+  komentarz_do_gry_id NUMBER,
+  gra_id NUMBER,
+  uzytkownik_id NUMBER,
   data DATE,
-  tekst VARCHAR2(200),
-  CONSTRAINT KOMENTARZ_DO_GRY_pk PRIMARY KEY (id),
-  CONSTRAINT  KOMENTARZ_DO_GRY_fk1 FOREIGN KEY (id_gra)
-  REFERENCES GRA(id),
-  CONSTRAINT  KOMENTARZ_DO_GRY_fk2 FOREIGN KEY (id_uzytkownik)
-  REFERENCES UZYTKOWNIK(uzytkownik_id)
+  tekst VARCHAR2(200)
 );
 
+
+CREATE SEQUENCE KOMENTARZ_DO_GRY_seq;
+CREATE OR REPLACE TRIGGER KOMENTARZ_DO_GRY_seq_trg
+BEFORE INSERT ON KOMENTARZ_DO_GRY
+FOR EACH ROW
+BEGIN
+  :NEW.komentarz_do_gry_id := KOMENTARZ_DO_GRY_seq.NEXTVAL;
+END;
+/
+
+--------------------------------------------------------------------------------
 create table PORADNIK_DO_GRY (
-  id NUMBER,
-  id_uzytkownik NUMBER,
-  id_gra NUMBER,
-  id_platforma NUMBER,
+  poradnik_do_gry_id NUMBER,
+  uzytkownik_id NUMBER,
+  gra_id NUMBER,
+  platforma_id NUMBER,
   tekst VARCHAR2(200),
-  tagi VARCHAR2(200),
-  CONSTRAINT PORADNIK_DO_GRY_pk PRIMARY KEY (id),
-  CONSTRAINT PORADNIK_DO_GRY_fk1 FOREIGN KEY (id_gra)         REFERENCES GRA(id),
-  CONSTRAINT PORADNIK_DO_GRY_fk2 FOREIGN KEY (id_uzytkownik)  REFERENCES UZYTKOWNIK(uzytkownik_id),
-  CONSTRAINT PORADNIK_DO_GRY_fk3 FOREIGN KEY (id_platforma)   REFERENCES PLATFORMA(id)
+  tagi VARCHAR2(200)
 );
+CREATE SEQUENCE PORADNIK_DO_GRY_seq;
+CREATE OR REPLACE TRIGGER PORADNIK_DO_GRY_seq_trg
+BEFORE INSERT ON PORADNIK_DO_GRY
+FOR EACH ROW
+BEGIN
+  :NEW.poradnik_do_gry_id := PORADNIK_DO_GRY_seq.NEXTVAL;
+END;
+/
 
+--------------------------------------------------------------------------------
 create table TWORZENIE_GRY (
-  id_gra NUMBER,
-  id_platforma NUMBER,
-  id_studio_deweloperskie NUMBER,
+  gra_id NUMBER,
+  platforma_id NUMBER,
+  studio_deweloperskie_id NUMBER,
   czas_powstawania NUMBER,
-  budzet NUMBER,
-  CONSTRAINT TWORZENIE_GRY_pk PRIMARY KEY (id_gra,id_platforma),
-  CONSTRAINT TWORZENIE_GRY_fk1 FOREIGN KEY (id_gra)
-  REFERENCES GRA(id),
-  CONSTRAINT TWORZENIE_GRY_fk2 FOREIGN KEY (id_platforma)
-  REFERENCES PLATFORMA(id),
-  CONSTRAINT TWORZENIE_GRY_fk3 FOREIGN KEY (id_studio_deweloperskie)
-  REFERENCES STUDIO_DEWELOPERSKIE(id)
+  budzet NUMBER
 );
+--------------------------------------------------------------------------------
 
 create table RECENZJA (
-  id NUMBER,
-  id_gra NUMBER,
-  id_platforma NUMBER,
-  id_autor NUMBER,
+  recenzja_id NUMBER,
+  gra_id NUMBER,
+  platforma_id NUMBER,
+  autor_id NUMBER,
   tytul VARCHAR2(200),
   tekst VARCHAR2(200),
-  tagi VARCHAR2(200),
-  CONSTRAINT recenzja_pk PRIMARY KEY (id),
-  CONSTRAINT recenzja_fk1 FOREIGN KEY (id_gra)
-  REFERENCES GRA(id),
-  CONSTRAINT recenzja_fk2 FOREIGN KEY (id_platforma)
-  REFERENCES PLATFORMA(id),
-  CONSTRAINT recenzja_fk3 FOREIGN KEY (id_autor)
-  REFERENCES UZYTKOWNIK(uzytkownik_id)
+  tagi VARCHAR2(200)
 );
+
+
+CREATE SEQUENCE RECENZJA_seq;
+CREATE OR REPLACE TRIGGER RECENZJA_seq_trg
+BEFORE INSERT ON RECENZJA
+FOR EACH ROW
+BEGIN
+  :NEW.recenzja_id := RECENZJA_seq.NEXTVAL;
+END;
+/
+--------------------------------------------------------------------------------
 
 create table KOMENTARZ_DO_RECENZJI (
-  id NUMBER,
-  id_gra NUMBER,
-  id_recenzja NUMBER,
+  komentarz_do_recenzji_id NUMBER,
+  gra_id NUMBER,
+  recenzja_id NUMBER,
   data DATE,
-  tekst VARCHAR2(200),
-  CONSTRAINT KOMENTARZ_DO_RECENZJI_pk PRIMARY KEY (id),
-  CONSTRAINT  KOMENTARZ_DO_RECENZJI_fk1 FOREIGN KEY (id_gra)
-  REFERENCES GRA(id),
-  CONSTRAINT  KOMENTARZ_DO_RECENZJI_fk2 FOREIGN KEY (id_recenzja)
-  REFERENCES RECENZJA(id)
+  tekst VARCHAR2(200)
 );
 
-INSERT INTO UZYTKOWNIK (uzytkownik_id,nazwa) VALUES (1,'Tom');
-INSERT INTO UZYTKOWNIK (uzytkownik_id,nazwa) VALUES (2,'John');
-INSERT INTO UZYTKOWNIK (uzytkownik_id,nazwa) VALUES (3,'Tim');
-INSERT INTO UZYTKOWNIK (uzytkownik_id,nazwa) VALUES (4,'Fred');
-INSERT INTO UZYTKOWNIK (uzytkownik_id,nazwa) VALUES (5,'Garry');
+CREATE SEQUENCE KOMENTARZ_DO_RECENZJI_seq;
+CREATE OR REPLACE TRIGGER KOMENTARZ_DO_RECENZJI_seq_trg
+BEFORE INSERT ON KOMENTARZ_DO_RECENZJI
+FOR EACH ROW
+BEGIN
+  :NEW.komentarz_do_recenzji_id := KOMENTARZ_DO_RECENZJI_seq.NEXTVAL;
+END;
+/
+--------------------------------------------------------------------------------
+ALTER TABLE WYDAWCA ADD CONSTRAINT WYDAWCA_pk PRIMARY KEY (wydawca_id);
+ALTER TABLE UZYTKOWNIK ADD CONSTRAINT UZYTKOWNIK_pk PRIMARY KEY (uzytkownik_id);
+ALTER TABLE GATUNEK ADD CONSTRAINT GATUNEK_pk PRIMARY KEY (gatunek_id);
+ALTER TABLE STUDIO_DEWELOPERSKIE ADD CONSTRAINT STUDIO_DEWELOPERSKIE_pk PRIMARY KEY (studio_deweloperskie_id);
+ALTER TABLE PLATFORMA ADD  CONSTRAINT PLATFORMA_pk PRIMARY KEY (platforma_id);
+ALTER TABLE GRA ADD  CONSTRAINT gra_pk PRIMARY KEY (gra_id);
+ALTER TABLE GRA ADD CONSTRAINT gra_fk FOREIGN KEY (gatunek_id) REFERENCES GATUNEK(gatunek_id);
+ALTER TABLE WYDANIE_GRY ADD CONSTRAINT WYDANIE_GRY_pk PRIMARY KEY (gra_id, wydawca_id, platforma_id);
+ALTER TABLE WYDANIE_GRY ADD CONSTRAINT WYDANIE_GRY_fk1 FOREIGN KEY (gra_id) REFERENCES GRA(gra_id);
+ALTER TABLE WYDANIE_GRY ADD CONSTRAINT WYDANIE_GRY_fk2 FOREIGN KEY (wydawca_id) REFERENCES WYDAWCA(wydawca_id);
+ALTER TABLE WYDANIE_GRY ADD CONSTRAINT WYDANIE_GRY_fk3 FOREIGN KEY (platforma_id) REFERENCES PLATFORMA(platforma_id);
+ALTER TABLE KOMENTARZ_DO_GRY ADD CONSTRAINT KOMENTARZ_DO_GRY_pk PRIMARY KEY (komentarz_do_gry_id);
+ALTER TABLE KOMENTARZ_DO_GRY ADD CONSTRAINT KOMENTARZ_DO_GRY_fk1 FOREIGN KEY (gra_id) REFERENCES GRA(gra_id);
+ALTER TABLE KOMENTARZ_DO_GRY ADD CONSTRAINT KOMENTARZ_DO_GRY_fk2 FOREIGN KEY (uzytkownik_id) REFERENCES UZYTKOWNIK(uzytkownik_id);
+ALTER TABLE PORADNIK_DO_GRY ADD CONSTRAINT PORADNIK_DO_GRY_pk PRIMARY KEY (poradnik_do_gry_id);
+ALTER TABLE PORADNIK_DO_GRY ADD CONSTRAINT PORADNIK_DO_GRY_fk1 FOREIGN KEY (gra_id)         REFERENCES GRA(gra_id);
+ALTER TABLE PORADNIK_DO_GRY ADD CONSTRAINT PORADNIK_DO_GRY_fk2 FOREIGN KEY (uzytkownik_id)  REFERENCES UZYTKOWNIK(uzytkownik_id);
+ALTER TABLE PORADNIK_DO_GRY ADD CONSTRAINT PORADNIK_DO_GRY_fk3 FOREIGN KEY (platforma_id)   REFERENCES PLATFORMA(platforma_id);
+ALTER TABLE TWORZENIE_GRY ADD CONSTRAINT TWORZENIE_GRY_pk PRIMARY KEY (gra_id, platforma_id);
+ALTER TABLE TWORZENIE_GRY ADD CONSTRAINT TWORZENIE_GRY_fk1 FOREIGN KEY (gra_id) REFERENCES GRA(gra_id);
+ALTER TABLE TWORZENIE_GRY ADD CONSTRAINT TWORZENIE_GRY_fk2 FOREIGN KEY (platforma_id) REFERENCES PLATFORMA(platforma_id);
+ALTER TABLE TWORZENIE_GRY ADD CONSTRAINT TWORZENIE_GRY_fk3 FOREIGN KEY (studio_deweloperskie_id) REFERENCES STUDIO_DEWELOPERSKIE(studio_deweloperskie_id);
+ALTER TABLE RECENZJA ADD CONSTRAINT RECENZJA_pk PRIMARY KEY (recenzja_id);
+ALTER TABLE RECENZJA ADD CONSTRAINT recenzja_fk1 FOREIGN KEY (gra_id) REFERENCES GRA(gra_id);
+ALTER TABLE RECENZJA ADD CONSTRAINT recenzja_fk2 FOREIGN KEY (platforma_id) REFERENCES PLATFORMA(platforma_id);
+ALTER TABLE RECENZJA ADD CONSTRAINT recenzja_fk3 FOREIGN KEY (autor_id) REFERENCES UZYTKOWNIK(uzytkownik_id);
+ALTER TABLE KOMENTARZ_DO_RECENZJI ADD CONSTRAINT KOMENTARZ_DO_RECENZJI_pk PRIMARY KEY (komentarz_do_recenzji_id);
+ALTER TABLE KOMENTARZ_DO_RECENZJI ADD CONSTRAINT  KOMENTARZ_DO_RECENZJI_fk1 FOREIGN KEY (gra_id) REFERENCES GRA(gra_id);
+ALTER TABLE KOMENTARZ_DO_RECENZJI ADD CONSTRAINT  KOMENTARZ_DO_RECENZJI_fk2 FOREIGN KEY (recenzja_id) REFERENCES RECENZJA(recenzja_id);
 
-INSERT INTO ZNAJOMOSC (id_a,id_b) VALUES (1,2);
-INSERT INTO ZNAJOMOSC (id_a,id_b) VALUES (2,3);
-INSERT INTO ZNAJOMOSC (id_a,id_b) VALUES (3,5);
-INSERT INTO ZNAJOMOSC (id_a,id_b) VALUES (4,5);
-INSERT INTO ZNAJOMOSC (id_a,id_b) VALUES (5,1);
+INSERT INTO GATUNEK (nazwa) VALUES ('FPS');
+INSERT INTO GATUNEK (nazwa) VALUES ('RTS');
+INSERT INTO GATUNEK (nazwa) VALUES ('Platformowa');
+INSERT INTO GATUNEK (nazwa) VALUES ('Przygodowa');
+INSERT INTO GATUNEK (nazwa) VALUES ('Symulator');
+INSERT INTO GATUNEK (nazwa) VALUES ('Sportowa');
+INSERT INTO GATUNEK (nazwa) VALUES ('God Game');
+INSERT INTO GATUNEK (nazwa) VALUES ('Multiplayer Online Battle Arena');
+INSERT INTO GATUNEK (nazwa) VALUES ('Car Racing');
+INSERT INTO GATUNEK (nazwa) VALUES ('TPP');
 
-INSERT INTO GATUNEK (id,nazwa) VALUES (1,'FPS');
-INSERT INTO GATUNEK (id,nazwa) VALUES (2,'RTS');
-INSERT INTO GATUNEK (id,nazwa) VALUES (3,'Platformowa');
-INSERT INTO GATUNEK (id,nazwa) VALUES (4,'Przygodowa');
-INSERT INTO GATUNEK (id,nazwa) VALUES (5,'Symulator');
-INSERT INTO GATUNEK (id,nazwa) VALUES (6,'Sportowa');
-INSERT INTO GATUNEK (id,nazwa) VALUES (7,'God Game');
-INSERT INTO GATUNEK (id,nazwa) VALUES (8,'Multiplayer Online Battle Arena');
-INSERT INTO GATUNEK (id,nazwa) VALUES (9,'Car Racing');
-INSERT INTO GATUNEK (id,nazwa) VALUES (10,'TPP');
+INSERT INTO PLATFORMA (nazwa) VALUES ('PC');
+INSERT INTO PLATFORMA (nazwa) VALUES ('PS4');
+INSERT INTO PLATFORMA (nazwa) VALUES ('XBox');
+INSERT INTO PLATFORMA (nazwa) VALUES ('PS3');
+INSERT INTO PLATFORMA (nazwa) VALUES ('Pegasus');
+INSERT INTO PLATFORMA (nazwa) VALUES ('Gameboy');
 
-INSERT INTO PLATFORMA (id,nazwa) VALUES (1,'PC');
-INSERT INTO PLATFORMA (id,nazwa) VALUES (2,'PS4');
-INSERT INTO PLATFORMA (id,nazwa) VALUES (3,'XBox');
-INSERT INTO PLATFORMA (id,nazwa) VALUES (4,'PS3');
-INSERT INTO PLATFORMA (id,nazwa) VALUES (5,'Pegasus');
-INSERT INTO PLATFORMA (id,nazwa) VALUES (6,'Gameboy');
-
-INSERT INTO GRA (id,nazwa,id_gatunek,tagi) VALUES (1,'Counter Strike Global Offensive',1,'');
-INSERT INTO GRA (id,nazwa,id_gatunek,tagi) VALUES (2,'Empire Earth 3',2,'');
-INSERT INTO GRA (id,nazwa,id_gatunek,tagi) VALUES (3,'Flight Gear',5,'');
-INSERT INTO GRA (id,nazwa,id_gatunek,tagi) VALUES (4,'FIFA 15',6,'');
-INSERT INTO GRA (id,nazwa,id_gatunek,tagi) VALUES (5,'The Vanishing of Ethan Carter',4,'');
-INSERT INTO GRA (id,nazwa,id_gatunek,tagi) VALUES (6,'Super Mario Bros',3,'');
-INSERT INTO GRA (id,nazwa,id_gatunek,tagi) VALUES (7,'Populus',7,'');
-INSERT INTO GRA (id,nazwa,id_gatunek,tagi) VALUES (8,'Counter Strike 1.6',1,'');
-INSERT INTO GRA (id,nazwa,id_gatunek,tagi) VALUES (9,'League of Legends',8,'');
-INSERT INTO GRA (id,nazwa,id_gatunek,tagi) VALUES (10,'Dying Light',1,'');
-INSERT INTO GRA (id,nazwa,id_gatunek,tagi) VALUES (11,'Half Life',1,'');
-INSERT INTO GRA (id,nazwa,id_gatunek,tagi) VALUES (12,'Portal',1,'');
-INSERT INTO GRA (id,nazwa,id_gatunek,tagi) VALUES (13,'Crysis',1,'');
-INSERT INTO GRA (id,nazwa,id_gatunek,tagi) VALUES (14,'Need for Speed: Most Wanted',9,'');
-INSERT INTO GRA (id,nazwa,id_gatunek,tagi) VALUES (15,'Grand Theft Auto V',10,'');
+INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES ('Counter Strike Global Offensive',1,'');
+INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES ('Empire Earth 3',2,'');
+INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES ('Flight Gear',5,'');
+INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES ('FIFA 15',6,'');
+INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES ('The Vanishing of Ethan Carter',4,'');
+INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES ('Super Mario Bros',3,'');
+INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES ('Populus',7,'');
+INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES ('Counter Strike 1.6',1,'');
+INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES ('League of Legends',8,'');
+INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES ('Dying Light',1,'');
+INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES ('Half Life',1,'');
+INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES ('Portal',1,'');
+INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES ('Crysis',1,'');
+INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES ('Need for Speed: Most Wanted',9,'');
+INSERT INTO GRA (nazwa,gatunek_id,tagi) VALUES ('Grand Theft Auto V',10,'');
 
 INSERT INTO WYDAWCA (wydawca_id,nazwa) VALUES (null,'Valve Corporation');
 INSERT INTO WYDAWCA (wydawca_id,nazwa) VALUES (null,'Techland');
@@ -235,23 +320,23 @@ INSERT INTO WYDAWCA (wydawca_id,nazwa) VALUES (null,'Activision');
 INSERT INTO WYDAWCA (wydawca_id,nazwa) VALUES (null,'Riot Games');
 INSERT INTO WYDAWCA (wydawca_id,nazwa) VALUES (null,'Rockstar Games');
 
-INSERT INTO WYDANIE_GRY (id_gra,id_wydawca,id_platforma,data) VALUES (1,1,1,TO_DATE('21-08-2012'));
-INSERT INTO WYDANIE_GRY (id_gra,id_wydawca,id_platforma,data) VALUES (8,1,1,TO_DATE('01-11-2000'));
-INSERT INTO WYDANIE_GRY (id_gra,id_wydawca,id_platforma,data) VALUES (9,6,1,TO_DATE('07-10-2009'));
-INSERT INTO WYDANIE_GRY (id_gra,id_wydawca,id_platforma,data) VALUES (10,2,1,TO_DATE('07-10-2009'));
-INSERT INTO WYDANIE_GRY (id_gra,id_wydawca,id_platforma,data) VALUES (11,1,1,TO_DATE('19-11-1998'));
-INSERT INTO WYDANIE_GRY (id_gra,id_wydawca,id_platforma,data) VALUES (12,1,1,TO_DATE('10-10-2007'));
-INSERT INTO WYDANIE_GRY (id_gra,id_wydawca,id_platforma,data) VALUES (13,4,1,TO_DATE('16-10-2007'));
-INSERT INTO WYDANIE_GRY (id_gra,id_wydawca,id_platforma,data) VALUES (14,4,1,TO_DATE('06-12-2005'));
-INSERT INTO WYDANIE_GRY (id_gra,id_wydawca,id_platforma,data) VALUES (15,7,1,TO_DATE('14-04-2015'));
-INSERT INTO WYDANIE_GRY (id_gra,id_wydawca,id_platforma,data) VALUES (15,7,2,TO_DATE('18-11-2014'));
-INSERT INTO WYDANIE_GRY (id_gra,id_wydawca,id_platforma,data) VALUES (15,7,3,TO_DATE('17-09-2013'));
-INSERT INTO WYDANIE_GRY (id_gra,id_wydawca,id_platforma,data) VALUES (15,7,4,TO_DATE('17-09-2013'));
+INSERT INTO WYDANIE_GRY (gra_id,wydawca_id,platforma_id,data) VALUES (1,1,1,TO_DATE('21-08-2012'));
+INSERT INTO WYDANIE_GRY (gra_id,wydawca_id,platforma_id,data) VALUES (8,1,1,TO_DATE('01-11-2000'));
+INSERT INTO WYDANIE_GRY (gra_id,wydawca_id,platforma_id,data) VALUES (9,6,1,TO_DATE('07-10-2009'));
+INSERT INTO WYDANIE_GRY (gra_id,wydawca_id,platforma_id,data) VALUES (10,2,1,TO_DATE('07-10-2009'));
+INSERT INTO WYDANIE_GRY (gra_id,wydawca_id,platforma_id,data) VALUES (11,1,1,TO_DATE('19-11-1998'));
+INSERT INTO WYDANIE_GRY (gra_id,wydawca_id,platforma_id,data) VALUES (12,1,1,TO_DATE('10-10-2007'));
+INSERT INTO WYDANIE_GRY (gra_id,wydawca_id,platforma_id,data) VALUES (13,4,1,TO_DATE('16-10-2007'));
+INSERT INTO WYDANIE_GRY (gra_id,wydawca_id,platforma_id,data) VALUES (14,4,1,TO_DATE('06-12-2005'));
+INSERT INTO WYDANIE_GRY (gra_id,wydawca_id,platforma_id,data) VALUES (15,7,1,TO_DATE('14-04-2015'));
+INSERT INTO WYDANIE_GRY (gra_id,wydawca_id,platforma_id,data) VALUES (15,7,2,TO_DATE('18-11-2014'));
+INSERT INTO WYDANIE_GRY (gra_id,wydawca_id,platforma_id,data) VALUES (15,7,3,TO_DATE('17-09-2013'));
+INSERT INTO WYDANIE_GRY (gra_id,wydawca_id,platforma_id,data) VALUES (15,7,4,TO_DATE('17-09-2013'));
 
 select GRA.NAZWA,WYDAWCA.NAZWA as NAZWA_WYDAWCY,PLATFORMA.NAZWA as NAZWA_PLATFORMY,WYDANIE_GRY.DATA as DATA_WYDANIA
-from GRA join WYDANIE_GRY on GRA.ID = WYDANIE_GRY.id_gra
-join WYDAWCA on WYDANIE_GRY.ID_WYDAWCA = WYDAWCA.WYDAWCA_ID
-join PLATFORMA on WYDANIE_GRY.ID_PLATFORMA = PLATFORMA.ID
+from GRA join WYDANIE_GRY on GRA.gra_id = WYDANIE_GRY.gra_id
+join WYDAWCA on WYDANIE_GRY.wydawca_id = WYDAWCA.WYDAWCA_ID
+join PLATFORMA on WYDANIE_GRY.platforma_id = PLATFORMA.platforma_id
 order by WYDANIE_GRY.DATA;
 
 commit;
